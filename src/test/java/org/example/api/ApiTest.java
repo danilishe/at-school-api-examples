@@ -20,7 +20,7 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 
 public class ApiTest {
-    @BeforeClass
+//    @BeforeClass
     public void prepare() throws IOException {
         // Читаем конфигурационный файл в System.properties -- простейшее HashMap хранилище
         System.getProperties().load(ClassLoader.getSystemResourceAsStream("application.properties"));
@@ -44,7 +44,7 @@ public class ApiTest {
      * Простейшая проверка: создаём объект, сохраняем на сервере и проверяем, что при запросе возвращается
      * "тот же" объект
      */
-    @Test(description = "Проверка, что объект сохраняется")
+//    @Test(description = "Проверка, что объект сохраняется")
     public void checkObjectSave() {
         Pet pet = new Pet();
         int id = new Random().nextInt((int) 50_0000d); // просто нужно создать произвольный айди
