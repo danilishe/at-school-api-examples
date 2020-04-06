@@ -1,9 +1,13 @@
 package org.example.api;
 
+import com.google.gson.Gson;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
 import org.example.model.Pet;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -40,13 +44,15 @@ public class ApiTest {
      * Простейшая проверка: создаём объект, сохраняем на сервере и проверяем, что при запросе возвращается
      * "тот же" объект
      */
-    @Test
+    @Test(description = "Проверка, что объект сохраняется")
     public void checkObjectSave() {
         Pet pet = new Pet();
-        int id = new Random().nextInt(500000); // просто нужно создать произвольный айди
+        int id = new Random().nextInt((int) 50_0000d); // просто нужно создать произвольный айди
         String name = "Pet_" + UUID.randomUUID().toString(); // UUID гарантирует уникальность строки
         pet.setId(id);
         pet.setName(name);
+
+        Allure.addAttachment("Отправляемый объект", ContentType.JSON.toString(), new Gson().toJson(pet));
 
         given()  // часть стандартного синтаксиса BDD. Означает предварительные данные. Иначе говоря ДАНО:
                 .body(pet) // указываем что  помещаем в тело запроса. Поскольку у нас подключен Gson, он преобразуется в JSON
@@ -86,6 +92,8 @@ public class ApiTest {
         // (как описано в Swagger.io), даже если мы отправляли не полную модель.
         // TODO можно переопределить методы equals у объектов Pet и других, чтобы происходило корректное сравнение
         // не заданных полей с пустыми
+        Allure.description("Проверяем, что имя соответствует");
+        Allure.addAttachment("Образец полученного объекта", ContentType.JSON.toString(), new Gson().toJson(actual));
         Assert.assertEquals(actual.getName(), pet.getName());
 
     }
